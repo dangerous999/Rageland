@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
+// Banana sucks ass
 public class Coin : MonoBehaviour {
     private GameMaster gm;
 	void Start () {
