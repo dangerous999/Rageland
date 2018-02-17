@@ -32,6 +32,7 @@ public class HomingBullet : MonoBehaviour
         */
     }
 
+        // Fico je gej
     void FixedUpdate()
     {
         Vector2 point2Target = transform.position - target.transform.position;
