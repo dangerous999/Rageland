@@ -13,7 +13,10 @@ public class Player : MonoBehaviour
     
     public float jumpPower = 410f;
     public float maxSpeed = 4.5f;
-    public float jumpPushForce = 350f;
+
+    public float wallJumpPushForce = 10f;
+    public float wallJumpPower = 10f;
+
     public float maxFallSpeed = 10f;
     public float maxSlideSpeed = 1.5f;
     public float acceleration = 10f;
@@ -63,43 +66,21 @@ public class Player : MonoBehaviour
     // Physics movement
     void FixedUpdate()
     {
-        float horizontal = Input.GetAxis("Horizontal");
-        if (horizontal < -0.01f)
+        float x = Input.GetAxis("Horizontal");
+
+        if (Input.GetKey(KeyCode.A))
         {
+            rb2D.velocity = new Vector2(x * maxSpeed, rb2D.velocity.y);
             transform.localScale = new Vector3(-1, 1, 1);
-            if (rb2D.velocity.x > -this.maxSpeed)
-            {
-                rb2D.AddForce(new Vector2(-this.acceleration, 0.0f));
-            }
-            else
-            {
-                rb2D.velocity = new Vector2(-this.maxSpeed, rb2D.velocity.y);
-            }
+//            transform.Translate(new Vector2(-maxSpeed, 0) * Time.deltaTime);
         }
-        else if (horizontal > 0.01f)
+        if (Input.GetKey(KeyCode.D))
         {
+            rb2D.velocity = new Vector2(x * maxSpeed, rb2D.velocity.y);
             transform.localScale = new Vector3(1, 1, 1);
-            if (rb2D.velocity.x < this.maxSpeed)
-            {
-                rb2D.AddForce(new Vector2(this.acceleration, 0.0f));
-            }
-            else
-            {
-                rb2D.velocity = new Vector2(this.maxSpeed, rb2D.velocity.y);
-            }
+           // transform.Translate(new Vector2(maxSpeed, 0) * Time.deltaTime);
         }
-
-        // TODO Fix friction
-        // Friction
-        //                Vector3 easeVelocity = rb2D.velocity;
-        //                easeVelocity.y = rb2D.velocity.y;
-        //                easeVelocity.z = 0.0f;
-        //                easeVelocity.x *= 0.9f;
-        //                if (grounded)
-        //                {
-        //                  rb2D.velocity = easeVelocity;
-        //                }
-
+      //  Debug.Log(rb2D.velocity.y);
         // Wall slide speed and falling/rising speed
         if (canWallJump)
         {
@@ -113,21 +94,6 @@ public class Player : MonoBehaviour
             if (rb2D.velocity.y > maxFallSpeed)
                 rb2D.velocity = new Vector2(rb2D.velocity.x, maxFallSpeed);
         }
-        /*
-        // When movement to right is greater than maxSpeed set it to maxSpeed
-        if (rb2D.velocity.x > maxSpeed) 
-        {
-            rb2D.velocity = new Vector2(maxSpeed, rb2D.velocity.y);
-        }
-        // When movement to left is greater than maxSpeed set it to maxSpeed
-        if (rb2D.velocity.x < -maxSpeed) 
-        {
-            rb2D.velocity = new Vector2(-maxSpeed, rb2D.velocity.y);
-        }
-        // Left and right movement
-        float h = Input.GetAxis("Horizontal");
-        rb2D.AddForce((Vector2.right * speed) * h);
-        */
 
     }
     void Jump()
@@ -142,11 +108,12 @@ public class Player : MonoBehaviour
         wallJumped = true;
 
         // TODO Is this line even needed?
-        rb2D.velocity = new Vector2(rb2D.velocity.x, 0); // Make y velocity 0 to ignore gravity
+      //  rb2D.velocity = new Vector2(rb2D.velocity.x, 0); // Make y velocity 0 to ignore gravity
         /////////////////////// WIP 
-//        rb2D.velocity = new Vector2(jumpPushForce * -transform.localScale.x, this.jumpPower);
+//        rb2D.velocity = new Vector2(wallJumpPushForce * -transform.localScale.x, this.jumpPower);
         /////////////////////// 
-         rb2D.AddForce(new Vector2(jumpPushForce * -transform.localScale.x, jumpPower)); // Push in opposite of facing direction
+      //   rb2D.AddForce(new Vector2(wallJumpPushForce * -transform.localScale.x, jumpPower)); // Push in opposite of facing direction
+        rb2D.velocity += new Vector2(wallJumpPushForce * -transform.localScale.x, wallJumpPower);
         transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z); // Flip sprite
         ++jumpCount;
     }
